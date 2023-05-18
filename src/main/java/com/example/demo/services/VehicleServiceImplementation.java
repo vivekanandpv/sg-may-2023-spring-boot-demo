@@ -1,45 +1,66 @@
 package com.example.demo.services;
 
 import com.example.demo.models.Vehicle;
-import org.springframework.beans.factory.annotation.Value;
+import com.example.demo.repositories.VehicleRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class VehicleServiceImplementation implements VehicleService {
-    private final String key;
+    private final VehicleRepository repository;
 
-    public VehicleServiceImplementation(@Value("${app.key}") String key) {
-        this.key = key;
+    public VehicleServiceImplementation(VehicleRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     public List<Vehicle> getAll() {
-        return null;
+        return repository.findAll();
     }
 
     @Override
     public Vehicle getById(int id) {
-        Vehicle v = new Vehicle();
-        v.setMake("Toyota");
-        v.setModel("HyCross");
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Could not find the vehicle"));
+    }
 
-        return v;
+    @Override
+    public Vehicle getByMake(String make) {
+        //  jpql
+//        return repository.findTheFirstVehicleFromAManufacturerJpql(make)
+//                .orElseThrow(() -> new RuntimeException("Could not find the vehicle"));
+
+        //  native
+        return repository.findTheFirstVehicleFromAManufacturerNative(make)
+                .orElseThrow(() -> new RuntimeException("Could not find the vehicle"));
     }
 
     @Override
     public Vehicle create(Vehicle vehicle) {
-        return null;
+        repository.saveAndFlush(vehicle);
+        return vehicle;
     }
+
+
 
     @Override
     public Vehicle update(int id, Vehicle vehicle) {
-        return null;
+        Vehicle vehicleDb = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Could not find the vehicle"));
+
+        BeanUtils.copyProperties(vehicle, vehicleDb);
+        repository.saveAndFlush(vehicleDb);
+
+        return vehicleDb;
     }
 
     @Override
     public void delete(int id) {
+        Vehicle vehicleDb = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Could not find the vehicle"));
 
+        repository.delete(vehicleDb);
     }
 }

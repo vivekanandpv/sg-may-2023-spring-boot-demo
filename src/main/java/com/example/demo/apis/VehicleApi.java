@@ -23,16 +23,17 @@ public class VehicleApi {
         return ResponseEntity.ok(service.getAll());
     }
 
-    @GetMapping(value = "{id}", produces = {
-            MediaType.APPLICATION_JSON_VALUE,
-            MediaType.APPLICATION_XML_VALUE }
-    )
+    @GetMapping("{id}")
     public ResponseEntity<Vehicle> getById(@PathVariable int id) {
         return ResponseEntity.ok(service.getById(id));
     }
 
-    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE,
-            MediaType.APPLICATION_XML_VALUE })
+    @GetMapping("by-make/{make}")
+    public ResponseEntity<Vehicle> getByMake(@PathVariable String make) {
+        return ResponseEntity.ok(service.getByMake(make));
+    }
+
+    @PostMapping
     public ResponseEntity<Vehicle> create(@RequestBody Vehicle vehicle) {
         return ResponseEntity.ok(service.create(vehicle));
     }

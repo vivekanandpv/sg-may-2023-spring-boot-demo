@@ -1,8 +1,24 @@
 package com.example.demo.models;
 
+import javax.persistence.*;
+
+@Entity
 public class Vehicle {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
     private String make;
     private String model;
+    private String color;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getMake() {
         return make;
@@ -18,5 +34,13 @@ public class Vehicle {
 
     public void setModel(String model) {
         this.model = model;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }
